@@ -1,0 +1,4 @@
+A PHP class for accessing online resources hidden behind login forms and other sites that normally require user interaction
+
+Also includes a class called RemoteForm which allows PHP to fill out forms and respect defaults values and parameters.
+The curl_http_client is needed to get by CURLs limitation of not following redirects with open_basedir enabled
