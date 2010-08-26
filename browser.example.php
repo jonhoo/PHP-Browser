@@ -8,8 +8,11 @@ require 'browser.class.php';
 
 /**
  * New browser object
+ * User agent string is not compulsory usually,
+ *  but Wikipedia sends us a 402 if we don't
+ * Thanks Richard Williams
  */
-$b = new Browser ( );
+$b = new Browser ( 'PHP Browser' );
 
 /**
  * Navigate to the first url

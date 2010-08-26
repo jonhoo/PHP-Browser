@@ -301,7 +301,7 @@ class Browser {
                  * pass that as the post data to the Curl HTTP client's
                  * post handler method. Then we handle the response.
                  */
-                $this -> _handleResponse ( $this -> _curl -> send_post_data ( $this -> _resolveUrl ( $form -> getAction() ), http_build_query ( $form -> getParameters() ) ), $form -> getAction() );
+                $this -> _handleResponse ( $this -> _curl -> send_post_data ( $this -> _resolveUrl ( $form -> getAction() ), $form -> getParameters() ), $form -> getAction() );
                 break;
         }
 

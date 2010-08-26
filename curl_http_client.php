@@ -1,13 +1,17 @@
+
 <?php
 
 /**
- * @version 1.2-fr
+ * @version 1.3
  * @package dinke.net
  * @copyright &copy; 2008 Dinke.net
  * @author Dragan Dinic <dragan@dinke.net>
  * @change Jon Gjengset
  *   Added a new function for following redirects without using CURLOPT_FOLLOWLOCATION
  *   This is the only change...
+ * @change Jon Gjengset 23/08/2010
+ *   Fixed problems with cURL sending 100-continue requests which it can't interpret the replies to
+ *   Also, the code now handles escaping of key-value pairs in POST submissions better
  */
 
 /**
@@ -149,6 +153,7 @@ class Curl_HTTP_Client
 	 */
 	function send_post_data($url, $postdata, $ip=null, $timeout=10)
 	{
+    
 		//set various curl options first
 
 		// set url to post to
@@ -169,34 +174,12 @@ class Curl_HTTP_Client
 
 		//set curl function timeout to $timeout
 		curl_setopt($this->ch, CURLOPT_TIMEOUT, $timeout);
-
+        
 		//set method to post
 		curl_setopt($this->ch, CURLOPT_POST, true);
 
-
-		//generate post string
-		$post_array = array();
-		if(is_array($postdata))
-		{		
-			foreach($postdata as $key=>$value)
-			{
-				$post_array[] = urlencode($key) . "=" . urlencode($value);
-			}
-
-			$post_string = implode("&",$post_array);
-
-			if($this->debug)
-			{
-				echo "Url: $url\nPost String: $post_string\n";
-			}
-		}
-		else 
-		{
-			$post_string = $postdata;
-		}
-
 		// set post string
-		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_string);
+		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $postdata);
 
 
 		//and finally send curl request
@@ -232,7 +215,7 @@ class Curl_HTTP_Client
 	{
 		// set url to post to
 		curl_setopt($this->ch, CURLOPT_URL,$url);
-
+        
 		//set method to get
 		curl_setopt($this->ch, CURLOPT_HTTPGET,true);
 
@@ -518,14 +501,23 @@ function curl_exec_redir($ch)
         $curl_loops = 0;
         return FALSE;
     }
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
     curl_setopt($ch, CURLOPT_HEADER, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
     $data = curl_exec($ch);
     $data = str_replace("\r", "\n", str_replace("\r\n", "\n", $data));
     list($header, $data) = explode("\n\n", $data, 2);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if ($http_code == 301 || $http_code == 302)
+    
+    //echo "*** Got HTTP code: $http_code ***\n";
+    //echo "**  Got headers: \n$header\n\n";
+    
+    if ( $http_code == 301 || $http_code == 302 )
     {
+        // If we're redirected, we should revert to GET
+		curl_setopt($ch, CURLOPT_HTTPGET,true);
+        
         $matches = array();
         preg_match('/Location:(.*?)\n/i', $header, $matches);
         $url = @parse_url(trim(array_pop($matches)));
@@ -543,6 +535,7 @@ function curl_exec_redir($ch)
         if (!$url['path'])
             $url['path'] = $last_url['path'];
         $new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . (!empty($url['query'])?'?'.$url['query']:'');
+        //echo "Being redirected to $new_url\n";
         curl_setopt($ch, CURLOPT_URL, $new_url);
         return curl_exec_redir($ch);
     } else {
