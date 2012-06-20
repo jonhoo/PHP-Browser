@@ -42,7 +42,7 @@ class Browser {
         if ( !empty ( $userAgent ) ) {
             $this -> _curl -> set_user_agent ( $userAgent );
         }
-        $this -> _curl -> store_cookies ( '/tmp/browser_cookies.cookie' );
+        $this -> _curl -> store_cookies ( sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'browser_cookies.cookie' );
         if ( trim ( $url ) != '' )  {
             $this -> navigate ( $url );
         }
