@@ -189,6 +189,8 @@ class Browser {
             throw new Exception ( "Malformed HTML server response from url: " . $url );
         }
 
+        $this->rawdata = $data;
+
         // Generte a XPath navigator
         $this -> _navigator = new DOMXpath ( $this -> _currentDocument );
     }
