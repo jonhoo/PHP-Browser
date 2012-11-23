@@ -216,6 +216,14 @@ class RemoteForm {
     }
 
     /**
+     * Sets this form's action
+     * @param String $action
+     */
+    public function setAction ($action) {
+        $this -> _action = $action;
+    }
+
+    /**
      * Gets this form's method
      * @return String Method
      */
