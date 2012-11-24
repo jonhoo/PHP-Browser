@@ -28,6 +28,10 @@ class Browser {
      * @var DOMXpath $_navigator An XPath for the current document
      */
     private $_navigator = null;
+    /**
+     * @var The raw data returned by the last query
+     */
+    private $_rawdata = null;
 
     /**
      * Constructor for the browsers
@@ -189,6 +193,8 @@ class Browser {
             throw new Exception ( "Malformed HTML server response from url: " . $url );
         }
 
+        $this->_rawdata = $data;
+
         // Generte a XPath navigator
         $this -> _navigator = new DOMXpath ( $this -> _currentDocument );
     }
@@ -315,6 +321,14 @@ class Browser {
      */
     public function getSource () {
         return $this -> _currentDocument -> saveHTML();
+    }
+
+    /**
+     * Returns the raw source of the current page untouched
+     * @return String The current HTML
+     */
+    public function getRawResponse () {
+        return $this -> _rawdata;
     }
 }
 
