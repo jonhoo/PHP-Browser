@@ -518,8 +518,8 @@ function curl_exec_redir($ch)
 		curl_setopt($ch, CURLOPT_HTTPGET,true);
         
         $matches = array();
-        preg_match('/Location:(.*?)\n/i', $header, $matches);
-        $url = @parse_url(trim(array_pop($matches)));
+        preg_match('/Location:\s*(.*?)(\n|$)/i', $header, $matches);
+        $url = @parse_url(trim($matches[1]));
         if (!$url)
         {
             //couldn't process the url to redirect to
