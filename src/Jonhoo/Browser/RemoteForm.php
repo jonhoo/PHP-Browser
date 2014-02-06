@@ -1,5 +1,7 @@
 <?php
 
+namespace Jonhoo\Browser;
+
 /**
  * A class for extracting information about HTML Forms
  */
@@ -29,15 +31,15 @@ class RemoteForm {
      * Constructor
      * @param DOMElement $form The form to extract data from
      */
-    public function __construct ( DOMElement $form ) {
+    public function __construct ( \DOMElement $form ) {
         /**
          * Import this form as a root node in a DOMDocument
          * so that we can use DOMXpath later.
          */
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         $this -> _form = $doc -> importNode ( $form, true );
         $doc -> appendChild ( $this -> _form );
-        $this -> _navigator = new DOMXpath ( $doc );
+        $this -> _navigator = new \DOMXpath ( $doc );
 
         // If we have a non-empty action attribute, we set the action to the value of the action attribute
         if ( trim ( $this -> _form -> getAttribute ( 'action' ) ) != '' ) {

@@ -1,0 +1,23 @@
+{
+    "name": "jonhoo/php-browser",
+    "type": "library",
+    "description": "PHP library for browsing the web",
+    "keywords": ["browser", "curl"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jon Gjengset",
+            "email": "jon@tsp.io",
+            "homepage": "http://tsp.io"
+        }
+    ],
+    "require": {
+        "lib-curl": "7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Jonhoo\\Browser\\": "src/"
+        },
+        "files": ["src/curl_http_client.php"]
+    }
+}

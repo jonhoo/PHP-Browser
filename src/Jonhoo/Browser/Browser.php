@@ -1,13 +1,6 @@
 <?php
 
-/**
- * Remote form is needed for handling submit actions
- */
-require_once 'remoteform.class.php';
-/**
- * The (modified) curl HTTP client is needed for HTTP requests
- */
-require_once 'curl_http_client.php';
+namespace Jonhoo\Browser;
 
 /**
  * A class that emulates a regular HTTP browser client, and allows scripts to execute
@@ -42,7 +35,7 @@ class Browser {
         /**
          * Create a cURL HTTP instance, first parameter is debug mode
          */
-        $this -> _curl = new Curl_HTTP_Client(true);
+        $this -> _curl = new \Curl_HTTP_Client(true);
         if ( !empty ( $userAgent ) ) {
             $this -> _curl -> set_user_agent ( $userAgent );
         }
@@ -67,7 +60,7 @@ class Browser {
          * After resolving, it must be absolute, otherwise we're stuck...
          */
         if ( !strpos ( $url, 'http' ) === 0 ) {
-            throw new Exception ( "Unknown protocol used in navigation url: " . $url );
+            throw new \Exception ( "Unknown protocol used in navigation url: " . $url );
         }
 
         /**
@@ -104,7 +97,7 @@ class Browser {
 
                 // Still no match, throw error
                 if ( $a -> length != 1 ) {
-                    throw new Exception ( intval ( $a -> length ) . " links found matching: " . $link );
+                    throw new \Exception ( intval ( $a -> length ) . " links found matching: " . $link );
                 }
 
                 $link_as_xpath = $link_as_xpath_contains;
@@ -125,7 +118,7 @@ class Browser {
             }
 
             if ( strtolower ( $form -> tagName ) !== 'form' ) {
-                throw new Exception ( "Button " . $link . " exists, but does not belong to a form" );
+                throw new \Exception ( "Button " . $link . " exists, but does not belong to a form" );
             }
 
             $this -> submitForm ( $this -> getForm ( $form ), $a -> getAttribute ( 'name' ) );
@@ -154,14 +147,14 @@ class Browser {
     public function download ( $match, $filename ) {
         $e = $this -> _navigator -> query ( $match );
         if ( !$e || $e -> length != 1 ) {
-            throw new Exception ( intval ( $e -> length ) . " elements found matching: " . $match );
+            throw new \Exception ( intval ( $e -> length ) . " elements found matching: " . $match );
         }
 
         $e = $e -> item ( 0 );
 
         // If we don't have a linking attribute, we fail
         if ( !$e -> hasAttribute ( 'src' ) && !$e -> hasAttribute ( 'href' ) ) {
-            throw new Exception ( "No downloadable attribute found for element matching: " . $match );
+            throw new \Exception ( "No downloadable attribute found for element matching: " . $match );
         }
 
         // Resolve the linked resource
@@ -184,19 +177,19 @@ class Browser {
     private function _handleResponse ( $data, $url ) {
         // We must have fetched a URL
         if ( !$url ) {
-            throw new Exception ( "Could not load url: " . $url );
+            throw new \Exception ( "Could not load url: " . $url );
         }
 
         // Attempt to parse the document
-        $this -> _currentDocument = new DOMDocument();
+        $this -> _currentDocument = new \DOMDocument();
         if ( ! ( @$this -> _currentDocument -> loadHTML ( $data ) ) ) {
-            throw new Exception ( "Malformed HTML server response from url: " . $url );
+            throw new \Exception ( "Malformed HTML server response from url: " . $url );
         }
 
         $this->_rawdata = $data;
 
         // Generte a XPath navigator
-        $this -> _navigator = new DOMXpath ( $this -> _currentDocument );
+        $this -> _navigator = new \DOMXpath ( $this -> _currentDocument );
     }
 
     /**
@@ -205,7 +198,7 @@ class Browser {
      * @return RemoteForm The matched form
      */
     public function getForm ( $formMatch ) {
-        if ( $formMatch instanceof DOMElement ) {
+        if ( $formMatch instanceof \DOMElement ) {
             $form = $formMatch;
         } else if ( is_string ( $formMatch ) ) {
             // Find the element
@@ -213,12 +206,12 @@ class Browser {
 
             // No element found
             if ( $form -> length != 1 ) {
-                throw new Exception ( $form -> length . " forms found matching: " . $formMatch );
+                throw new \Exception ( $form -> length . " forms found matching: " . $formMatch );
             }
 
             $form = $form -> item ( 0 );
         } else {
-            throw new Exception ( "Illegal expression given to getForm" );
+            throw new \Exception ( "Illegal expression given to getForm" );
         }
 
         // New RemoteForm
@@ -337,7 +330,7 @@ class Browser {
  * Not used, but remains from an earlier version of
  * this script. Felt I could not remove it...
  */
-function castToDOMElement ( DOMNode $node ) {
+function castToDOMElement ( \DOMNode $node ) {
     if ( $node instanceof DOMElement ) {
         return $node;
     }

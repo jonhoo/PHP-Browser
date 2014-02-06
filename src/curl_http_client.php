@@ -504,7 +504,7 @@ function curl_exec_redir($ch)
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
     curl_setopt($ch, CURLOPT_HEADER, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    curl_setopt($ch, CURLOPT_VERBOSE, false);
     $data = curl_exec($ch);
     $data = str_replace("\r", "\n", str_replace("\r\n", "\n", $data));
     list($header, $data) = explode("\n\n", $data, 2);

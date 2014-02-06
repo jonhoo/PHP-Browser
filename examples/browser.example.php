@@ -1,6 +1,7 @@
 <?php
 
-require 'browser.class.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
+use \Jonhoo\Browser\Browser;
 
 /**
  * The long way to the PHP Reference Manual...
