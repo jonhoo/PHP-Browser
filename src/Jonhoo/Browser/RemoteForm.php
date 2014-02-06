@@ -155,7 +155,7 @@ class RemoteForm {
 
         // Find all other indexes
         $matches = array();
-        preg_match_all ( "/\[([^\]]+)\]/g", $fieldName, $matches, PREG_PATTERN_ORDER );
+        preg_match_all ( "/\[([^\]]+)\]/", $fieldName, $matches, PREG_PATTERN_ORDER );
 
         // No other indexes, set value for first index and return
         if ( empty ( $matches[1] ) ) {
