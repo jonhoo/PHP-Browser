@@ -527,11 +527,11 @@ function curl_exec_redir($ch)
             return $data;
         }
         $last_url = parse_url(curl_getinfo($ch, CURLINFO_EFFECTIVE_URL));
-        if (!$url['scheme'])
+        if (empty($url['scheme']))
             $url['scheme'] = $last_url['scheme'];
-        if (!$url['host'])
+        if (empty($url['host']))
             $url['host'] = $last_url['host'];
-        if (!$url['path'])
+        if (empty($url['path']))
             $url['path'] = $last_url['path'];
         $new_url = $url['scheme'] . '://' . $url['host'] . $url['path'] . (!empty($url['query'])?'?'.$url['query']:'');
         //echo "Being redirected to $new_url\n";
