@@ -89,7 +89,15 @@ class Browser {
         if ( !$a || $a -> length != 1 ) {
             // Attempt exact title match
             $link_as_xpath = "//a[text() = '" . str_replace ( "'", "\'", $link ) . "'] | //input[@type = 'submit'][@value = '" . str_replace ( "'", "\'", $link ) . "']";
-            $a = $this -> _navigator -> query ( $link_as_xpath );
+            $a = @$this -> _navigator -> query ( $link_as_xpath );
+
+            if ( !$a ) {
+                // This would mean the initial $link was an XPath expression
+                // Redo it without error suppression
+                $this -> _navigator -> query ( $link );
+                throw new \Exception ( "Failed to find matches for selector: " . $link );
+            }
+
             if ( $a -> length != 1 ) {
                 // Attempt title contains match
                 $link_as_xpath_contains = "//a[contains(.,'" . str_replace ( "'", "\'", $link ) . "')]";
